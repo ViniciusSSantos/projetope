@@ -3,36 +3,38 @@
 #include <string.h>
 #include <time.h>
 
+//Esse struct é usado para organizar o .txt e ajudar na hora de fazer o parse e validação de login e armazenamento de saques, depositos etc
+struct transferencias {
+    struct tm dataHora;
+    float valor;
+};
+
+struct client{
+    char nome[50];
+    char senha[50];
+    char conta[5];
+    float saldo;
+    struct transferencias transferencias[50];
+};
+
 void encrypt(char *, char *, int);
 void login(char *, char *, int *);
 void saveUser(char *);
 void saveTransfer(int *);
 void itoa(int, char *);
 void reverse(char *);
-
-
+void getContaDisponivel(char *);
+void cadastraCliente(struct client *cliente);
 
 void main(){
-    //Aqui eh apenas um exemplo de quem for implementar a parte de cadastro do usuario. A funcao Encrypt so precisa receber usuario e senha
-    //Esse struct é usado para organizar o .txt e ajudar na hora de fazer o parse e validação de login e armazenamento de saques, depositos etc
-
     srand(time(NULL)); //necessário para o rand()
-
-    struct client{
-        char usuario[50];
-        char senha[50];
-        int agencia;
-        float saldo;
-        float saque;
-        float deposito;
-        float transferencias[5];
-    };
 
     int id;
     printf("Bem vindo ao Banco XXXXX, pressione 1 para fazer login e 2 para criar uma nova conta: ");
     scanf("%d", &id);
     char usuarioDecrypt[50], senhaDecrypt[50];
-    int agencia;
+    struct client cliente;
+    int conta;
 
     switch(id){
 
@@ -46,9 +48,9 @@ void main(){
             scanf("%s", senhaDecrypt);
 
             printf("Agência: ");
-            scanf("%d", &agencia);
+            scanf("%d", &conta);
 
-            encrypt(usuarioDecrypt, senhaDecrypt, agencia);
+            encrypt(usuarioDecrypt, senhaDecrypt, conta);
 
             /*
             Aqui a variável usuarioDecrypt estará já encriptada, da mesma forma que estará salva no .txt
@@ -58,33 +60,39 @@ void main(){
             break;
 
         case 2:
-            printf("Usuário: ");
-            scanf("%s", usuarioDecrypt);
+            printf("Nome: ");
+            scanf("%s", cliente.nome);
 
             printf("Senha: ");
-            scanf("%s", senhaDecrypt);
+            scanf("%s", cliente.senha);
 
-            agencia = rand()%((9999+1)-1000) + 1000;
+            cadastraCliente(&cliente);
 
-            printf("sua agência é: %d\n", agencia);
-
-            //Como haverá número de agência, adicionei ele para fazer parte da encriptação do usuário e sua identificação posteriormente
-            encrypt(usuarioDecrypt, senhaDecrypt, agencia);
-            saveUser(usuarioDecrypt);
+            printf("Sua conta é: %s, salve esse número, você precisará dele para acessar sua conta.\n", cliente.conta);
 
             break;
 
     }
-
-
 }
 
-void encrypt(char *usuario, char *senha, int agencia){
+// funcao para cadastrar um cliente
+void cadastraCliente(struct client *cliente) {
+    // busca numero da conta disponivel e atribuiu ao cliente
+    getContaDisponivel(cliente->conta);
+
+    // criptografa as informacoes do cliente
+    //char usuarCrypt = encrypt(cliente);
+
+    // salva cliente no banco de dados
+    //saveUser(usuarCrypt);
+}
+
+void encrypt(char *usuario, char *senha, int conta){
 
     int i;
     char str[20];
 
-    itoa(agencia, str);
+    itoa(conta, str);
 
     strcat(usuario, "-"); //Aqui esotu adicionando apenas esse traco para nao ocorrer o erro de termos dois usuarios diferentes mas com a mesma criptografia
     strcat(usuario, senha);
@@ -105,6 +113,42 @@ void saveUser(char *str){
     fputs(str, fp);
     fputs("\n", fp);
     fclose(fp);
+}
+
+// busca a ultima conta que foi cadastrada e retorna o numero da proxima conta
+void getContaDisponivel(char * novaConta) {
+    FILE *fp = fopen("./usuarios.txt", "r");
+    
+    char* registro = NULL;
+    size_t size = 0;
+    char ultimaConta[5] = "00000";
+    
+
+    while (getline(&registro, &size, fp) != EOF) {
+        strncpy(ultimaConta, registro, 5);
+    }    
+
+    // converte a ultima conta para inteiro e soma 1
+    int contaNumerico = atoi(ultimaConta) + 1;
+
+    // copia o numero da conta para uma nova string
+    sprintf(novaConta, "%d", contaNumerico);
+
+    // desloca a string para deixar o numero da conta a direita
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 4; j++) {
+                if (novaConta[j] != 0 && novaConta[j + 1] == 0) {
+                    char aux = novaConta[j];
+                    novaConta[j] = novaConta[j + 1];
+                    novaConta [j + 1] = aux;
+            }
+        }
+    }
+
+    // completa com zeros a esquerda
+    for (int i = 0; i < 5; i++)
+        if (novaConta[i] == 0)
+            novaConta[i] = '0';
 }
 
 
