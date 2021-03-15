@@ -17,7 +17,9 @@ struct client{
     struct transferencias transferencias[50];
 };
 
-void encrypt(char *, char *, int);
+// void encrypt(char *, char *, int);
+void encrypt(struct client *cliente, char *);
+void decrypt(char *);
 void login(char *, char *, int *);
 void saveUser(char *);
 void saveTransfer(int *);
@@ -50,7 +52,7 @@ void main(){
             printf("Agência: ");
             scanf("%d", &conta);
 
-            encrypt(usuarioDecrypt, senhaDecrypt, conta);
+            // encrypt(usuarioDecrypt, senhaDecrypt, conta);
 
             /*
             Aqui a variável usuarioDecrypt estará já encriptada, da mesma forma que estará salva no .txt
@@ -81,28 +83,62 @@ void cadastraCliente(struct client *cliente) {
     getContaDisponivel(cliente->conta);
 
     // criptografa as informacoes do cliente
-    //char usuarCrypt = encrypt(cliente);
+    char usuarCrypt[200];
+    encrypt(cliente, usuarCrypt);
 
-    // salva cliente no banco de dados
-    //saveUser(usuarCrypt);
+    saveUser(usuarCrypt);
 }
 
-void encrypt(char *usuario, char *senha, int conta){
+// void encrypt(char *usuario, char *senha, int conta){
+
+//     int i;
+//     char str[20];
+
+//     itoa(conta, str);
+
+//     strcat(usuario, "-"); //Aqui esotu adicionando apenas esse traco para nao ocorrer o erro de termos dois usuarios diferentes mas com a mesma criptografia
+//     strcat(usuario, senha);
+//     strcat(usuario, "-");
+//     strcat(usuario, str);
+
+//     for(i=0; i < strlen(usuario); i++){
+//         usuario[i] += 5;
+//     }
+
+// }
+
+void encrypt(struct client *client, char *str){
 
     int i;
-    char str[20];
+    char aux[200], saldo[10];
 
-    itoa(conta, str);
+    itoa(client->saldo, saldo);
 
-    strcat(usuario, "-"); //Aqui esotu adicionando apenas esse traco para nao ocorrer o erro de termos dois usuarios diferentes mas com a mesma criptografia
-    strcat(usuario, senha);
-    strcat(usuario, "-");
-    strcat(usuario, str);
 
-    for(i=0; i < strlen(usuario); i++){
-        usuario[i] += 5;
+    strcpy(aux, client->nome);
+    strcat(aux, "/");
+    strcat(aux, client->senha);
+    strcat(aux, "/");
+    strcat(aux, saldo);
+
+
+    for(i=0; i < strlen(aux); i++){
+        aux[i] += 2;
     }
 
+    strcpy(str, client->conta);
+    strcat(str, "1");
+    strcat(str, aux);
+
+}
+
+void decrypt(char *str){
+
+    int i;
+
+    for(i=5; i < strlen(str); i++){
+        str[i] -= 2;
+    }
 }
 
 
@@ -118,15 +154,15 @@ void saveUser(char *str){
 // busca a ultima conta que foi cadastrada e retorna o numero da proxima conta
 void getContaDisponivel(char * novaConta) {
     FILE *fp = fopen("./usuarios.txt", "r");
-    
+
     char* registro = NULL;
     size_t size = 0;
     char ultimaConta[5] = "00000";
-    
+
 
     while (getline(&registro, &size, fp) != EOF) {
         strncpy(ultimaConta, registro, 5);
-    }    
+    }
 
     // converte a ultima conta para inteiro e soma 1
     int contaNumerico = atoi(ultimaConta) + 1;
