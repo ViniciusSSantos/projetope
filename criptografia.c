@@ -153,16 +153,18 @@ void saveUser(char *str){
 
 // busca a ultima conta que foi cadastrada e retorna o numero da proxima conta
 void getContaDisponivel(char * novaConta) {
+    // abre o arquivo de usuarios no modo leitura
     FILE *fp = fopen("./usuarios.txt", "r");
 
+    // inicializa variaveis
     char* registro = NULL;
     size_t size = 0;
     char ultimaConta[5] = "00000";
 
-
-    while (getline(&registro, &size, fp) != EOF) {
-        strncpy(ultimaConta, registro, 5);
-    }
+    // percorre todas as linhas até chegar na ultima
+    // while (getline(&registro, &size, fp) != EOF) {
+    //     strncpy(ultimaConta, registro, 5);
+    // }
 
     // converte a ultima conta para inteiro e soma 1
     int contaNumerico = atoi(ultimaConta) + 1;
@@ -185,6 +187,9 @@ void getContaDisponivel(char * novaConta) {
     for (int i = 0; i < 5; i++)
         if (novaConta[i] == 0)
             novaConta[i] = '0';
+
+    // fecha arquivo de texto
+    fclose(fp);
 }
 
 
