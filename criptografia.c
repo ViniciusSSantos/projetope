@@ -17,15 +17,19 @@ struct client{
     struct transferencias transferencias[50];
 };
 
+int isNew = 0;
+int operacao;
+
 struct client bancoDados[1000];
 
 void encrypt(struct client *client);
 void decrypt(struct client *client);
 void saveClient(struct client cliente);
+float saque(float *saldo);
 struct client getClientByConta(char *conta);
 char* getContaDisponivel();
 
-void main(){
+int main(){
     while(1) {
         int id;
         printf("Bem vindo ao Banco XXXXX, pressione 1 para fazer login e 2 para criar uma nova conta: ");
@@ -46,10 +50,35 @@ void main(){
                 decrypt(&cliente);
 
                 if(strcmp(senha, cliente.senha) == 0){
-                    printf("Olá %s\n",cliente.nome);
+                    printf("Olá %s!\n", cliente.nome);
                 
                     // menu depois de ter logado
                     while(1) { 
+
+                      if(isNew == 0){
+                        printf("Realize seu primeiro depósito para sua conta:");
+                        scanf("%f", &cliente.saldo);
+                        isNew = 1;
+                      }
+                      
+                      printf("\nO que quer fazer hoje?\nSaldo em Conta: %.2f\n1-Saque \n2-Depósito \n3-Cartão Virtual \n", cliente.saldo);
+                      scanf("%d", &operacao);
+
+                      switch(operacao){
+
+                        case 1:
+                        cliente.saldo = saque(&cliente.saldo);
+                        printf("%f", cliente.saldo);
+                        break;
+
+                        case 2:
+                        // deposito();
+                        break;
+
+                        case 3:
+                        break;
+
+                      }
 
                     }
                 
@@ -110,6 +139,23 @@ void saveClient(struct client cliente) {
             break;
         }
     }
+}
+
+float saque(float *saldo){
+
+  float saque = 0;
+
+  printf("Insira a quantia que quer sacar:");
+  scanf("%f", &saque);
+
+
+  while(*saldo - saque < 0){
+    printf("Saque inválido, é necessário ter saldo em conta. Digite novamente:");
+    scanf("%f", &saque);
+  }
+  
+  return *saldo -= saque;
+  
 }
 
 struct client getClientByConta(char *conta) {
