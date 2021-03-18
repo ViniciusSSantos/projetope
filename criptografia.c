@@ -26,31 +26,48 @@ struct client getClientByConta(char *conta);
 char* getContaDisponivel();
 
 void main(){
-    while(1) {
+    printf("==========   Bem vindo ao Banco Digital   ==========\n");
+    int bancoDigital = 1;
+    while(bancoDigital) {
         int id;
-        printf("Bem vindo ao Banco XXXXX, pressione 1 para fazer login e 2 para criar uma nova conta: ");
+        printf("\n==========          Menu inicial          ==========\n");
+        printf("\n1 - Login\n2 - Cadastrar nova conta\n3 - Sair do programa\n");
         scanf("%d", &id);
+        getchar(); // remove \n apos input
         
         switch(id){
             case 1:
-                
-                printf("Conta: ");
+                printf("\n==========             Login              ==========\n");
+                printf("Insira seu número de conta: ");
                 struct client cliente;
                 scanf("%s", cliente.conta);
+                getchar(); // remove \n apos input
               
                 char senha[50];
-                printf("Senha: ");
-                scanf("%s", senha);
+                printf("Insira sua senha: ");
+                fgets(senha, 50, stdin);
 
                 cliente = getClientByConta(cliente.conta);
                 decrypt(&cliente);
 
                 if(strcmp(senha, cliente.senha) == 0){
-                    printf("Olá %s\n",cliente.nome);
-                
                     // menu depois de ter logado
-                    while(1) { 
-
+                    int logado = 1;
+                    while(logado) { 
+                        printf("\n==========           Menu conta           ==========\n");
+                        printf("Olá %s\nO que deseja fazer hoje?\n",cliente.nome);
+                        printf("\n1 - Ver saldo\n2 - Depósito\n3 - Saque\n4 - Transferência\n5 - Sair\n");
+                        
+                        int opcao;
+                        scanf("%d", &opcao);
+                        getchar(); // remove \n apos input
+                        switch(opcao){
+                            case 5:
+                                logado = 0;
+                                break;
+                            default:
+                                printf("\nFavor inserir uma opção válida.\n");
+                        }
                     }
                 
                 } else
@@ -59,23 +76,29 @@ void main(){
                 break;
 
             case 2:
-                
-                printf("Nome: ");
+                printf("\n==========    Cadastramento de contas     ==========\n");
+                printf("Qual é seu nome? ");
                 struct client novoCliente;
-                scanf("%s", novoCliente.nome);
+                fgets(novoCliente.nome, 50, stdin);
 
-                printf("Senha: ");
-                scanf("%s", novoCliente.senha);
+                printf("Insira uma senha para acessar sua conta (máximo de 50 caracteres): ");
+                fgets(novoCliente.senha, 50, stdin);
 
                 encrypt(&novoCliente);
-                strncpy(novoCliente.conta, getContaDisponivel(&novoCliente.conta), 5);
-                saveClient(novoCliente);
-
-                printf("Sua conta é: %s, salve esse número, você precisará dele para acessar sua conta.\n", novoCliente.conta);
+                strncpy(novoCliente.conta, getContaDisponivel(novoCliente.conta), 5);
                 struct client cliente2 = getClientByConta(novoCliente.conta); // se eu tirar essa linha, comeca a dar ruim na hora de gravar, nao sei pq
-
+                saveClient(novoCliente);
+                
+                printf("\nSeu número de conta é: %s, salve esse número, você precisará dele para acessar sua conta.\n", novoCliente.conta);
+                
+                printf("\nPressione 'ENTER' para voltar ao menu inicial.\n");
+                getchar();
                 break;
-
+            case 3:
+                bancoDigital = 0;
+                break;
+            default:
+                printf("\nFavor inserir uma opção válida.\n");
         }
     }
 }
@@ -147,9 +170,13 @@ char* getContaDisponivel() {
     // copia o numero da conta para uma nova string
     sprintf(conta, "%d", contaNumerico);
     
-    for (int i = 4; i >= 0; i--)
+    for (int i = 4; i >= 0; i--) {
         if (conta[4 - i])
             ultimaConta[i] = conta[4 - i];
+        else
+            break;
+    }
+        
 
     return ultimaConta;
 }
