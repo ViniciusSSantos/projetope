@@ -26,6 +26,7 @@ void encrypt(struct client *client);
 void decrypt(struct client *client);
 void saveClient(struct client cliente);
 float saque(float *saldo);
+float deposito(float *saldo);
 struct client getClientByConta(char *conta);
 char* getContaDisponivel();
 
@@ -56,13 +57,25 @@ int main(){
                     while(1) { 
 
                       if(isNew == 0){
+
+                        // Primeiro Depósito
                         printf("Realize seu primeiro depósito para sua conta:");
                         scanf("%f", &cliente.saldo);
+                        // Não é mais novo
                         isNew = 1;
+                        // Operações
+                        printf("\nO que quer fazer hoje?\nSaldo em Conta: R$%.2f\n1-Saque \n2-Depósito \n3-Cartão Virtual \n", cliente.saldo);
+                        printf("Selecione uma das opções:");
+                        scanf("%d", &operacao);
+                      }
+
+                      else{
+                        printf("\nDeseja fazer algo mais?\nSaldo em Conta: R$%.2f\n1-Saque \n2-Depósito \n3-Cartão Virtual \n", cliente.saldo);
+                        printf("Selecione uma das opções:");
+                        scanf("%d", &operacao);
                       }
                       
-                      printf("\nO que quer fazer hoje?\nSaldo em Conta: %.2f\n1-Saque \n2-Depósito \n3-Cartão Virtual \n", cliente.saldo);
-                      scanf("%d", &operacao);
+                      
 
                       switch(operacao){
 
@@ -72,7 +85,8 @@ int main(){
                         break;
 
                         case 2:
-                        // deposito();
+                        cliente.saldo = deposito(&cliente.saldo);
+                        printf("%f", cliente.saldo);
                         break;
 
                         case 3:
@@ -155,6 +169,18 @@ float saque(float *saldo){
   }
   
   return *saldo -= saque;
+  
+}
+
+float deposito(float *saldo){
+
+  float deposito = 0;
+
+  printf("Insira a quantia para depositar:");
+  scanf("%f", &deposito);
+
+  return *saldo += deposito;
+
   
 }
 
