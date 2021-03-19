@@ -65,7 +65,7 @@ int main(){
                         // Não é mais novo
                         isNew = 1;
                         // Operações
-                        printf("\nO que quer fazer hoje?\nSaldo em Conta: R$%.2f\n1-Saque \n2-Depósito \n3-Cartão Virtual \n", cliente.saldo);
+                        printf("\nO que quer fazer hoje?\nSaldo em Conta: R$%.2f\n1-Saque \n2-Depósito \n3-Cartão Virtual \n4-Transferência", cliente.saldo);
                         printf("Selecione uma das opções:");
                         scanf("%d", &operacao);
                       }
