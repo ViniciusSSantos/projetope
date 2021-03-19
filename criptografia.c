@@ -87,12 +87,12 @@ void main(){
 
                         case 1:
                         cliente.saldo = saque(&cliente.saldo);
-                        printf("%f", cliente.saldo);
+                        printf("Saldo após o saque: %.2f", cliente.saldo);
                         break;
 
                         case 2:
                         cliente.saldo = deposito(&cliente.saldo);
-                        printf("%f", cliente.saldo);
+                        printf("Saldo após o depósito: %.2f", cliente.saldo);
                         break;
 
                         case 3:
