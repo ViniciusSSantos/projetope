@@ -90,6 +90,29 @@ int main(){
                         break;
 
                         case 3:
+                        srand(time(0));
+
+                        printf("Numero do Cartao: ");
+
+                        for(int i = 0; i < 4; i++)
+                        {
+                            printf("%i ", 1000 + rand() %9000);
+                        }
+                        printf("\n"); 
+                        
+                        printf("Codigo de Seguranca: ");
+
+                        for(int i = 0; i < 1; i++)
+                        {
+                            printf("%i ", 100 + rand() %1000);
+                        }
+                        
+                        printf("\n");
+
+                        time_t data;
+                        data = time(NULL);
+                        struct tm tm = *localtime(&data);
+                        printf("Data de validade: %d/%d \n", tm.tm_mon + 1, tm.tm_year + 1900 + 10);
                         break;
 
                       }
