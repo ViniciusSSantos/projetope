@@ -27,6 +27,7 @@ void decrypt(struct client *client);
 void saveClient(struct client cliente);
 float saque(float *saldo);
 float deposito(float *saldo);
+int transfer(struct client *cliente1, char *nome, int value);
 struct client getClientByConta(char *conta);
 char* getContaDisponivel();
 
@@ -35,14 +36,14 @@ int main(){
         int id;
         printf("Bem vindo ao Banco XXXXX, pressione 1 para fazer login e 2 para criar uma nova conta: ");
         scanf("%d", &id);
-        
+
         switch(id){
             case 1:
-                
+
                 printf("Conta: ");
                 struct client cliente;
                 scanf("%s", cliente.conta);
-              
+
                 char senha[50];
                 printf("Senha: ");
                 scanf("%s", senha);
@@ -52,9 +53,9 @@ int main(){
 
                 if(strcmp(senha, cliente.senha) == 0){
                     printf("Olá %s!\n", cliente.nome);
-                
+
                     // menu depois de ter logado
-                    while(1) { 
+                    while(1) {
 
                       if(isNew == 0){
 
@@ -70,12 +71,12 @@ int main(){
                       }
 
                       else{
-                        printf("\nDeseja fazer algo mais?\nSaldo em Conta: R$%.2f\n1-Saque \n2-Depósito \n3-Cartão Virtual \n", cliente.saldo);
+                        printf("\nDeseja fazer algo mais?\nSaldo em Conta: R$%.2f\n1-Saque \n2-Depósito \n3-Cartão Virtual \n4-Transferência", cliente.saldo);
                         printf("Selecione uma das opções:");
                         scanf("%d", &operacao);
                       }
-                      
-                      
+
+
 
                       switch(operacao){
 
@@ -98,15 +99,15 @@ int main(){
                         {
                             printf("%i ", 1000 + rand() %9000);
                         }
-                        printf("\n"); 
-                        
+                        printf("\n");
+
                         printf("Codigo de Seguranca: ");
 
                         for(int i = 0; i < 1; i++)
                         {
                             printf("%i ", 100 + rand() %1000);
                         }
-                        
+
                         printf("\n");
 
                         time_t data;
@@ -115,17 +116,30 @@ int main(){
                         printf("Data de validade: %d/%d \n", tm.tm_mon + 1, tm.tm_year + 1900 + 10);
                         break;
 
+                        case 4:
+
+                            printf("digite o nome do usuário que será o recipiente da sua transferência\n");
+                            char nome;
+                            scanf("%s",&nome);
+                            printf("Qual é o valor que deseja transferir ?\n");
+                            int din;
+                            scanf("%d", &din);
+
+                            transfer(&cliente, &nome, din);
+                            break;
+
+
                       }
 
                     }
-                
+
                 } else
                     printf("Senha incorreta ou conta inexistente.\n");
 
                 break;
 
             case 2:
-                
+
                 printf("Nome: ");
                 struct client novoCliente;
                 scanf("%s", novoCliente.nome);
@@ -190,9 +204,9 @@ float saque(float *saldo){
     printf("Saque inválido, é necessário ter saldo em conta. Digite novamente:");
     scanf("%f", &saque);
   }
-  
+
   return *saldo -= saque;
-  
+
 }
 
 float deposito(float *saldo){
@@ -204,7 +218,7 @@ float deposito(float *saldo){
 
   return *saldo += deposito;
 
-  
+
 }
 
 struct client getClientByConta(char *conta) {
@@ -220,6 +234,37 @@ struct client getClientByConta(char *conta) {
     return *cliente;
 }
 
+int transfer(struct client *cliente1, char *nome, int value){
+
+
+     if(cliente1->saldo < value){
+        printf("Saldo insuficiente para transferência.\n");
+        return 0;
+
+    }
+
+
+    struct client *cliente2 = malloc(sizeof(struct client));
+
+      for (int i = 0; i < 1000; i++) {
+        if (strcmp(bancoDados[i].nome, nome) == 0) {
+            cliente2 = &bancoDados[i];
+            break;
+        }
+    }
+
+
+    (*cliente1).saldo -= value;
+    (*cliente2).saldo += value;
+    printf("transferência efetuada com sucesso");
+    printf("cliente 1: %f cliente 2: %f", cliente1->saldo, cliente2->saldo);
+
+
+}
+
+
+
+
 // busca a ultima conta que foi cadastrada e retorna o numero da proxima conta
 char* getContaDisponivel() {
 
@@ -231,7 +276,7 @@ char* getContaDisponivel() {
     for (int i = 0; i < 1000; i++) {
         if (strlen(bancoDados[i].conta) > 0 )
             strncpy(ultimaConta, bancoDados[i].conta, 5);
-        else 
+        else
             break;
     }
 
@@ -241,7 +286,7 @@ char* getContaDisponivel() {
     char conta[5];
     // copia o numero da conta para uma nova string
     sprintf(conta, "%d", contaNumerico);
-    
+
     for (int i = 4; i >= 0; i--)
         if (conta[4 - i])
             ultimaConta[i] = conta[4 - i];
