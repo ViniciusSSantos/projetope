@@ -704,7 +704,7 @@ void Borda(){
 
     system("cls");
     int i;
-    GotoXY(food.x,food.y);
+    GotoXY(comida.x,comida.y);
     printf("F");
     for(i=10; i<71; i++)
     {
