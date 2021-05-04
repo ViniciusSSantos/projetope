@@ -38,12 +38,23 @@ void main()
     }
 }
 
-// ===================== SPACE WARS =========================
+/* ===================== SPACE WARS =========================
+* Autor - Matheus Shimizu
+*
+* --------------- COMANDOS --------------------
+* ATIRAR - ESPACO
+* MOVER PARA ESQUERDA - SETA PARA ESQUERDA
+* MOVER PARA DIREITA - SETA PARA DIREITA
+* SAIR DO JOGO - BACKSPACE
+* ---------------------------------------------
+*/
 #define LINHAS 30       // numero de linhas visiveis no jogo
 #define COLUNAS 33      // numero de colunas visiveis no jogo (cada "espaco" possui 3 colunas)
-#define SHOT_SPEED 10.0 // velocidade em linhas/segundo do tiro
-#define FPS 15.0        // taxa de atualizacao visual do jogo
+#define GAME_SPEED 10.0 // velocidade em linhas/segundo do jogo
+#define ENEMY_SPEED 1.0 // velocidade em linhas/segundo do inimigo
+#define FPS 10.0        // taxa de atualizacao visual do jogo
 #define PLAYER 2        // constante que define um jogador
+#define ENEMY 3         // constante que define um inimigo
 #define WALL 9          // constante que define uma parede
 #define PLAYER_SHOT -1  // constante que define o tiro do jogador
 #define ENEMY_SHOT 1    // constante que define o tiro do inimigo
@@ -53,47 +64,72 @@ void main()
 #define SPACE 32        // constante que define a tecla seta espaco
 #define BACKSPACE 8     // constante que define a tecla seta retorno
 
+#define SCORE_INCREASE 10      // quanto o score vai aumentar a cada inimigo destruido
+#define DIFFICULTY_INCREASE 1 // quanto que o fator de ficuldade vai aumentar a cada inimigo destruido
+
 #define CLEAR_CONSOLE "cls"  // constante usada para limpar o console antes de cada atualizacao de tela
 
-int** initGameBoard();                                     // funcao para inicializar a matriz de jogo
-void updateGameBoard(int** gameBoard);                     // funcao para atualizar a janela de acordo com a matriz de jogo
-void updateShotPosition(int** gameBoard);                  // funcao para atualizar a posicao dos tiros na matriz de jogo
-void updatePlayer(int playerInput, int** gameBoard);       // funcao que atualiza a matriz de jogo com o input do jogador
+int** initGameBoard();                                                 // funcao para inicializar a matriz de jogo
+void printGameOver(int* score);                                                  // funcao para imprimir a tela de game over
+void updateScreen(int** gameBoard, int* score, int* level);                                    // funcao para atualizar a janela de acordo com a matriz de jogo
+void updateGame(int** gameBoard, int* playerHit, int* score, int* gameSpeed);  // funcao para atualizar a posicao dos tiros na matriz de jogo
+void updatePlayer(int playerInput, int** gameBoard);                   // funcao que atualiza a matriz de jogo com o input do jogador
+void updateEnemy(int** gameBoard);
 
 int pY = LINHAS - 1, pX = COLUNAS / 3 / 2; // variaveis que definem o local do player
+int isTimeToEnemyShoot = 0;                // variavel para determinar se o inimigo vai atirar ou nao
 
 int spaceWarsGame()
 {
     int** gameBoard = initGameBoard(); // inicializa matriz de jogo
     clock_t displayClock = clock();    // variavel auxiliar usada para atualizar a janela
-    clock_t shotClock = clock();       // variavel auxiliar usada para atualizar a posicao dos tiro no jogo
+    clock_t gameClock = clock();       // variavel auxiliar usada para atualizar a posicao dos tiro no jogo
+    clock_t enemyClock = clock();      // variavel auxiliar usada para atualizar a posicao do inimigo no jogo
     int game = 1;                      // variavel que indica que o jogo esta acontecendo
+    int playerHit = 0;                 // variavel que indica se o jogador foi atingido
+    int level = 0;                     // variavel que aumenta a dificuldade do jogo
+    srand(time(0));                    // inicializa funcao random
+
+    // inicializa variavel para manter o score do jogador
+    int* score = calloc(1, sizeof(int));
+    if (score == NULL)
+    {
+        printf("Erro: Memoria insuficiente\n");
+        exit(1);
+    }
+
+
 
     // loop de jogo
     while (game)
     {
         // calcula quanto tempo passou desde a ultima atualizacao de tela
-        double timeSinceLastScreenUpdate = (double)(clock() - displayClock) / CLOCKS_PER_SEC;
+        double timeSinceLastScreenUpdate = (clock() - (double)displayClock) / CLOCKS_PER_SEC;
 
         // caso o tempo seja maior que o tempo de 1 frame ou seja um tempo negativo (para o caso quando o clock volte para '0')
         if (timeSinceLastScreenUpdate > 1 / FPS || timeSinceLastScreenUpdate < 0)
         {
             displayClock = clock();
-            updateGameBoard(gameBoard);
+            updateScreen(gameBoard, score, &level);
         }
 
-        // calcula quanto tempo passou desde a ultima atualizacao de posicao dos tiros na tela
-        double timeSinceLastShotUpdate = (double)(clock() - shotClock) / CLOCKS_PER_SEC;
+        // calcula quanto tempo passou desde a ultima atualizacao do jogo
+        double timeSinceLastGameUpdate = (clock() - (double)gameClock) / CLOCKS_PER_SEC;
 
-        // caso o tempo seja maior que o tempo de movimentacao do tiro
-        if (timeSinceLastShotUpdate > 1 / SHOT_SPEED || timeSinceLastShotUpdate < 0)
+        // caso o tempo seja maior que o tempo de atualizacao do jogo
+        if (timeSinceLastGameUpdate > 1 / (GAME_SPEED + level / 10) || timeSinceLastGameUpdate < 0)
         {
-            shotClock = clock();
-            updateShotPosition(gameBoard);
+            gameClock = clock();
+            updateGame(gameBoard, &playerHit, score, &level);
+
+            // caso o jogador foi atingido, termina o jogo
+            if (playerHit)
+                game = 0;
         }
 
         // caso o jogador tenha apertado uma tecla
-        if (_kbhit()) {
+        if (_kbhit())
+        {
             // busca input do jogador
             int playerInput = _getch();
 
@@ -104,32 +140,64 @@ int spaceWarsGame()
                 updatePlayer(playerInput, gameBoard);
         }
 
+        // calcula quanto tempo passou desde a ultima atualizacao de posicao dos inimigos
+        double timeSinceLastEnemyUpdate = (clock() - (double)enemyClock) / CLOCKS_PER_SEC;
+
+        // caso o tempo seja maior que o tempo de movimentacao do inimigo
+        if (timeSinceLastEnemyUpdate > 1 / (ENEMY_SPEED + level / 10) || timeSinceLastEnemyUpdate < 0)
+        {
+            enemyClock = clock();
+            updateEnemy(gameBoard);
+        }
     }
+
+    // Imprime tela de Game Over e aguarda input do usuario para continuar
+    printGameOver(score);
+
+    return score;
 }
+
 
 int** initGameBoard()
 {
+    // aloca memoria para as linhas da matriz de jogo
     int** matrix = malloc(LINHAS * sizeof(int*));
 
+    // caso nao ha memoria suficiente para inicializar o jogo
+    if (matrix == NULL)
+    {
+        printf("Erro: Memoria insuficiente\n");
+        exit(1);
+    }
+
+    // aloca memoria para as colunas de cada linha da matriz
     for (size_t i = 0; i < LINHAS; i++)
     {
         matrix[i] = calloc(COLUNAS / 3, sizeof(int));
-        matrix[i][0] = WALL;
-        matrix[i][COLUNAS / 3 - 1] = WALL;
+
+        if (matrix[i] == NULL)
+        {
+            printf("Erro: Memoria insuficiente\n");
+            exit(1);
+        }
     }
 
+    // inicializa a posicao do jogador
     matrix[pY][pX] = PLAYER;
     return matrix;
 }
 
-void updateGameBoard(int** gameBoard)
+void updateScreen(int** gameBoard, int* score, int* level)
 {
+    // limpa o console antes de imprimir uma nova tela
     system(CLEAR_CONSOLE);
+
+    // varre a matriz de jogo e imprime de acordo
     for (size_t i = 0; i < LINHAS; i++)
     {
-        for (size_t j = 0; j < COLUNAS; j = j + 3)
+        for (size_t j = 0; j < COLUNAS / 3; j++)
         {
-            switch (gameBoard[i][j / 3])
+            switch (gameBoard[i][j])
             {
             case EMPTY:
                 printf("   ");
@@ -140,16 +208,26 @@ void updateGameBoard(int** gameBoard)
             case PLAYER_SHOT:
                 printf(" ^ ");
                 break;
+            case ENEMY:
+                printf("<o>");
+                break;
+            case ENEMY_SHOT:
+                printf(" o ");
+                break;
             default:
                 break;
             }
         }
         printf("\n");
     }
+
+    // imprime score e level atual do jogador
+    printf("SCORE: %d            LEVEL: %d", *score, *level);
 }
 
-void updateShotPosition(int** gameBoard)
+void updateGame(int** gameBoard, int* playerHit, int* score, int* level)
 {
+    // atualiza a posicao do tiro do jogador, varrendo a matriz de baixo para cima
     for (size_t i = 0; i < LINHAS; i++)
     {
         for (size_t j = 0; j < COLUNAS / 3; j++)
@@ -157,8 +235,53 @@ void updateShotPosition(int** gameBoard)
             if (gameBoard[i][j] == PLAYER_SHOT)
             {
                 gameBoard[i][j] = EMPTY;
-                if (i != 0)
-                    gameBoard[i - 1][j] = PLAYER_SHOT;
+
+                // caso esteja dentro da matriz de jogo, atualiza o tiro do jogador para a linha anterior
+                if (i > 0) {
+                    // caso o tiro destrua um inimigo, adiciona 10 pontos no score
+                    if (gameBoard[i - 1][j] == ENEMY) {
+                        gameBoard[i - 1][j] = EMPTY;
+                        *score += SCORE_INCREASE + 10 * (*level);
+                        *level += DIFFICULTY_INCREASE;
+                    }
+                    // caso o tiro encontre o tiro inimigo, deixa o espaco em vazio
+                    else if (gameBoard[i - 1][j] == ENEMY_SHOT)
+                        gameBoard[i - 1][j] = EMPTY;
+                    else
+                        gameBoard[i - 1][j] = PLAYER_SHOT;
+
+                }
+
+            }
+
+
+        }
+    }
+
+    // atualiza a posicao do tiro do inimigo, varrendo a matriz de cima para baixo
+    for (int i = (LINHAS - 1); i >= 0; i--)
+    {
+        for (int j = 0; j < COLUNAS / 3; j++)
+        {
+            if (gameBoard[i][j] == ENEMY_SHOT)
+            {
+                gameBoard[i][j] = EMPTY;
+
+                // caso ainda esteja dentro da matriz de jogo
+                if (i < LINHAS - 1)
+                {
+                    // caso a proxima posicao do tiro seja onde o jogador esta, atribui playerHit 1
+                    if (gameBoard[i + 1][j] == PLAYER)
+                        *playerHit = 1;
+                    // caso o tiro encontre o tiro do jogador, deixa o espaco em vazio
+                    else if (gameBoard[i + 1][j] == PLAYER_SHOT)
+                        gameBoard[i + 1][j] = EMPTY;
+                    // se nao, atualiza a posicao do tiro do inimigo
+                    else
+                        gameBoard[i + 1][j] = ENEMY_SHOT;
+
+                }
+
             }
         }
     }
@@ -166,13 +289,14 @@ void updateShotPosition(int** gameBoard)
 
 void updatePlayer(int playerInput, int** gameBoard)
 {
-
+    // atualiza a posicao do jogador na matriz de jogo de acordo com o input
     switch (playerInput)
     {
     case LEFT:
         gameBoard[pY][pX] = EMPTY;
 
-        if (pX > 1)
+        // caso o jogador tente ir para um quadrado nao permitido
+        if (pX > 0)
             pX--;
 
         gameBoard[pY][pX] = PLAYER;
@@ -180,7 +304,8 @@ void updatePlayer(int playerInput, int** gameBoard)
     case RIGHT:
         gameBoard[pY][pX] = EMPTY;
 
-        if (pX < COLUNAS / 3 - 2)
+        // caso o jogador tente ir para um quadrado nao permitido
+        if (pX < COLUNAS / 3 - 1)
             pX++;
 
         gameBoard[pY][pX] = PLAYER;
@@ -190,6 +315,75 @@ void updatePlayer(int playerInput, int** gameBoard)
     default:
         break;
     }
+}
+
+void updateEnemy(int** gameBoard)
+{
+    // inicializa variaveis de posicao do inimigo
+    int eX = -1, eY = -1;
+
+    // busca um inimigo na matriz de jogo
+    for (size_t i = 0; i < LINHAS; i++)
+    {
+        for (size_t j = 0; j < COLUNAS / 3; j++)
+        {
+            if (gameBoard[i][j] == ENEMY)
+            {
+                gameBoard[i][j] = EMPTY;
+                eX = j;
+                eY = i;
+            }
+        }
+    }
+
+    // decide a posicao no eixo X do inimigo
+    if (eX == -1) // se nao houver inimigo na matriz
+    {
+        eX = rand() % (COLUNAS / 3 - 1);
+    }
+    else if (eX > 0 && eX < COLUNAS / 3 - 1) // se o inimigo estiver entre as posicoes maximas da matriz
+    {
+        eX = (rand() % 3) + eX - 1;
+    }
+    else if (eX == COLUNAS / 3 - 1) // se o inimigo estiver no canto direito da matriz
+    {
+        eX = (rand() % 2) + eX - 1;
+    }
+    else if (eX == 0) // se o inimigo estiver no canto esquerdo da matriz
+    {
+        eX = rand() % 2;
+    }
+
+    // avanca a posicao do inimogo no eixo Y
+    eY++;
+
+    // caso ainda esteja dentro da matriz de jogo
+    if (eY < LINHAS - 1)
+    {
+        gameBoard[eY][eX] = ENEMY;
+
+        // altera entre atirar a cada passo que o inimigo da
+        if (isTimeToEnemyShoot)
+        {
+            gameBoard[eY + 1][eX] = ENEMY_SHOT;
+            isTimeToEnemyShoot = 0;
+        }
+        else
+        {
+            isTimeToEnemyShoot = 1;
+        }
+    }
+}
+
+void printGameOver(int* score)
+{
+    system(CLEAR_CONSOLE);
+    printf("         GAME OVER\n\n");
+    printf("SCORE: %d\n", *score);
+    printf("Pressione ENTER para voltar ao menu...");
+    getchar();
+    getchar();
+    system(CLEAR_CONSOLE);
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------
 //Parte do Gustavo
