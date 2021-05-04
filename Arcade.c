@@ -2,8 +2,12 @@
 #include <stdlib.h>
 #include <time.h>
 #include <conio.h>
+#include<ctype.h>
+#include <windows.h>
+#include <process.h>
 
 void vinteeum();
+
 
 void main()
 {
@@ -13,7 +17,7 @@ void main()
     {
         int id;
         printf("\n==========          Menu inicial          ==========");
-        printf("\n1 - Space Wars\n2 - 21\n\n0 - Sair do programa\n");
+        printf("\n1 - Space Wars\n2 - 21\n3 - Jogo da Cobrinha\n0 - Sair do programa\n");
         scanf("%d", &id);
         switch (id)
         {
@@ -23,6 +27,8 @@ void main()
         case 2:
             vinteeum();
             break;
+        case 3:
+            jogoCobra();
         case 0:
             arcade = 0;
             break;
@@ -374,3 +380,455 @@ void vinteeum(){
 
 
 //------------------------------------------------------------------------------------------------------------
+// Parte do Vinicius
+
+
+#define UP 72
+#define DOWN 80
+#define LEFT 75
+#define RIGHT 77
+
+int length; // tamanho inicial da cobra
+int bend_no; //posição da cauda onde acontece a dobra
+int len; // tamanho da cauda ganha pela cobra durante o jogo
+char key; // entrada do teclado
+int vidas; // número de vidas inicial
+
+int jogoCobra();//inicia o jogo
+void Print(); //Printa todas informações iniciais
+void load(); // carrega o jogo
+void Delay(long double); // Emula um delay
+void Move(); // Permite a movimentação da cobra
+void Comida(); // Gera aleatóriamente na tela um asterisco que representa a comida
+int Ponti(); // retorna a pontuação do jogador
+void gotoxy(int x, int y); // Funções padrões de que permitem inserir algo em qualquer lugar da tela *precisam ser declaradas no Code:blocks*
+void GotoXY(int x,int y); // Funções padrões de que permitem inserir algo em qualquer lugar da tela *precisam ser declaradas no Code:blocks*
+void Bend(); // Permite que a cauda da cobra se dobre
+void Borda(); // Gera os limites do jogo
+void Baixo(); // Permite a movimentação para baixo
+void Esq(); // Permite a movimentação para esquerda
+void Cima(); // Permite a movimentação para cima
+void Dir(); // Permite a movimentação para direita
+void Sair(); // checa se os critérios para que o jogador perca foram atingidos
+
+struct coord{
+    int x;
+    int y;
+    int direcao;
+};
+//
+
+// gera o struct que armazena as coordenadas da cabeça, onde a cauda ira se dobrar, comida e a cauda
+struct coord cabeca, bend[500],comida,cauda[30];
+
+int jogoCobra(){
+
+    Print();
+
+    system("cls");
+
+    load();
+
+    length=5;
+
+    cabeca.x=25;
+
+    cabeca.y=20;
+
+    cabeca.direcao=DOWN;
+
+    Borda();
+
+    Comida();
+
+    vidas=5;
+
+    bend[0]=cabeca;
+
+    Move();
+    return 0;
+
+
+}
+
+
+void Print(){
+
+    system("cls");
+    printf("\n Bem Vindo ao jogo da cobrinha, aperte qualquer botao pra começar a jogar!");
+    if(getch()==27)
+        exit(0);
+}
+
+void load(){
+
+    int r,q;
+    gotoxy(36,14);
+    printf("CARREGANDO...");
+    gotoxy(30,15);
+    for(r=1; r<=20; r++){
+        for(q=0; q<=100000000; q++);
+        printf("%c",177);
+    }
+    getch();
+}
+
+void Delay(long double k){
+    Score();
+    long double i;
+    for(i=0; i<=(10000000); i++);
+}
+
+void Move(){
+    int a,i;
+    do{
+        Comida();
+        fflush(stdin);
+
+        len=0;
+
+        for(i=0; i<30; i++){
+
+            cauda[i].x=0;
+
+            cauda[i].y=0;
+
+            if(i==length)
+
+                break;
+        }
+
+        Delay(length);
+
+        Borda();
+
+        if(cabeca.direcao==RIGHT)
+
+            Dir();
+
+        else if(cabeca.direcao==LEFT)
+
+            Esq();
+
+        else if(cabeca.direcao==DOWN)
+
+            Baixo();
+
+        else if(cabeca.direcao==UP)
+
+            Cima();
+
+        Sair();
+
+    }
+    while(!kbhit());
+
+    a=getch();
+
+    if(a==27)
+
+    {
+
+        system("cls");
+
+        exit(0);
+
+    }
+    key=getch();
+
+    if((key==RIGHT&&cabeca.direcao!=LEFT&&cabeca.direcao!=RIGHT)||(key==LEFT&&cabeca.direcao!=RIGHT&&cabeca.direcao!=LEFT)||(key==UP&&cabeca.direcao!=DOWN&&cabeca.direcao!=UP)||(key==DOWN&&cabeca.direcao!=UP&&cabeca.direcao!=DOWN))
+
+    {
+
+        bend_no++;
+
+        bend[bend_no]=cabeca;
+
+        cabeca.direcao=key;
+
+        if(key==UP)
+
+            cabeca.y--;
+
+        if(key==DOWN)
+
+            cabeca.y++;
+
+        if(key==RIGHT)
+
+            cabeca.x++;
+
+        if(key==LEFT)
+
+            cabeca.x--;
+
+        Move();
+
+    }
+
+    else if(key==27){
+
+        system("cls");
+
+        exit(0);
+
+    }
+
+    else{
+        printf("\a");
+        Move();
+    }
+}
+
+void Comida(){
+
+    if(cabeca.x==comida.x&&cabeca.y==comida.y){
+        length++;
+        time_t a;
+        a=time(0);
+        srand(a);
+        comida.x=rand()%70;
+        if(comida.x<=10)
+            comida.x+=11;
+        comida.y=rand()%30;
+        if(comida.y<=10)
+
+            comida.y+=11;
+    }
+
+    else if(comida.x==0){
+        comida.x=rand()%70;
+        if(comida.x<=10)
+            comida.x+=11;
+        comida.y=rand()%30;
+        if(comida.y<=10)
+            comida.y+=11;
+    }
+}
+
+int Score(){
+
+    int score;
+    GotoXY(20,8);
+    score=length-5;
+    printf("Pontuação: %d",(length-5));
+    score=length-5;
+    GotoXY(50,8);
+    printf("Vidas: %d",vidas);
+    return score;
+}
+
+
+void gotoxy(int x, int y){
+
+    COORD coord;
+
+    coord.X = x;
+
+    coord.Y = y;
+
+    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
+
+}
+void GotoXY(int x, int y){
+    HANDLE a;
+    COORD b;
+    fflush(stdout);
+    b.X = x;
+    b.Y = y;
+    a = GetStdHandle(STD_OUTPUT_HANDLE);
+    SetConsoleCursorPosition(a,b);
+}
+
+
+void Bend(){
+
+    int i,j,diff;
+    for(i=bend_no; i>=0&&len<length; i--){
+        if(bend[i].x==bend[i-1].x){
+
+            diff=bend[i].y-bend[i-1].y;
+
+            if(diff<0)
+                for(j=1; j<=(-diff); j++){
+                    cauda[len].x=bend[i].x;
+                    cauda[len].y=bend[i].y+j;
+                    GotoXY(cauda[len].x,cauda[len].y);
+                    printf("*");
+                    len++;
+                    if(len==length)
+                        break;
+                }
+            else if(diff>0)
+                for(j=1; j<=diff; j++){
+                    cauda[len].x=bend[i].x;
+                    cauda[len].y=bend[i].y-j;
+                    GotoXY(cauda[len].x,cauda[len].y);
+                    printf("*");
+                    len++;
+                    if(len==length)
+                        break;
+                }
+        }
+
+
+        else if(bend[i].y==bend[i-1].y){
+            diff=bend[i].x-bend[i-1].x;
+
+            if(diff<0)
+                for(j=1; j<=(-diff)&&len<length; j++){
+                    cauda[len].x=bend[i].x+j;
+                    cauda[len].y=bend[i].y;
+                    GotoXY(cauda[len].x,cauda[len].y);
+                    printf("*");
+                    len++;
+                    if(len==length)
+                        break;
+                }
+
+            else if(diff>0)
+                for(j=1; j<=diff&&len<length; j++){
+                    cauda[len].x=bend[i].x-j;
+                    cauda[len].y=bend[i].y;
+                    GotoXY(cauda[len].x,cauda[len].y);
+                    printf("*");
+                    len++;
+                    if(len==length)
+                        break;
+                }
+        }
+    }
+}
+
+void Borda(){
+
+    system("cls");
+    int i;
+    GotoXY(food.x,food.y);
+    printf("F");
+    for(i=10; i<71; i++)
+    {
+        GotoXY(i,10);
+        printf("!");
+        GotoXY(i,30);
+        printf("!");
+    }
+    for(i=10; i<31; i++)
+    {
+        GotoXY(10,i);
+        printf("!");
+        GotoXY(70,i);
+        printf("!");
+    }
+}
+
+void Baixo(){
+    int i;
+    for(i=0; i<=(cabeca.y-bend[bend_no].y)&&len<length; i++){
+        GotoXY(cabeca.x,cabeca.y-i);
+        {
+            if(len==0)
+                printf("v");
+            else
+                printf("*");
+        }
+        cauda[len].x=cabeca.x;
+        cauda[len].y=cabeca.y-i;
+        len++;
+    }
+    Bend();
+    if(!kbhit())
+        cabeca.y++;
+}
+
+void Esq()
+{
+    int i;
+    for(i=0; i<=(bend[bend_no].x-cabeca.x)&&len<length; i++)
+    {
+        GotoXY((cabeca.x+i),cabeca.y);
+        {
+            if(len==0)
+                printf("<");
+            else
+                printf("*");
+        }
+        cauda[len].x=cabeca.x+i;
+        cauda[len].y=cabeca.y;
+        len++;
+    }
+    Bend();
+    if(!kbhit())
+        cabeca.x--;
+
+}
+void Dir()
+{
+    int i;
+    for(i=0; i<=(cabeca.x-bend[bend_no].x)&&len<length; i++)
+    {
+        cauda[len].x=cabeca.x-i;
+        cauda[len].y=cabeca.y;
+        GotoXY(cauda[len].x,cauda[len].y);
+        {
+            if(len==0)
+                printf(">");
+            else
+                printf("*");
+        }
+
+        len++;
+    }
+    Bend();
+    if(!kbhit())
+        cabeca.x++;
+}
+
+
+void Cima()
+{
+    int i;
+    for(i=0; i<=(bend[bend_no].y-cabeca.y)&&len<length; i++)
+    {
+        GotoXY(cabeca.x,cabeca.y+i);
+        {
+            if(len==0)
+                printf("^");
+            else
+                printf("*");
+        }
+        cauda[len].x=cabeca.x;
+        cauda[len].y=cabeca.y+i;
+        len++;
+    }
+    Bend();
+    if(!kbhit())
+        cabeca.y--;
+}
+
+
+void Sair(){
+    int i,check=0;
+    for(i=4; i<length; i++){
+        if(cauda[0].x==cauda[i].x&&cauda[0].y==cauda[i].y){
+            check++;
+        }
+        if(i==length||check!=0)
+            break;
+    }
+    if(cabeca.x<=10||cabeca.x>=70||cabeca.y<=10||cabeca.y>=30||check!=0){
+        vidas--;
+        if(vidas>=0){
+            cabeca.x=25;
+            cabeca.y=20;
+            bend_no=0;
+            cabeca.direcao=DOWN;
+            Move();
+        }
+        else{
+            system("cls");
+            printf("Voce Perdeu! Pressione qualquer tecla para sair do jogo");
+            exit(0);
+        }
+    }
+}
