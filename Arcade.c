@@ -582,9 +582,9 @@ void vinteeum(){
 #define LEFT 75
 #define RIGHT 77
 
-int length; // tamanho inicial da cobra
+int length; // tamanho da cobra
 int bend_no; //posição da cauda onde acontece a dobra
-int len; // tamanho da cauda ganha pela cobra durante o jogo
+int len; // variavel auxiliar para posicionar a cabeça da cobra corretamente
 char key; // entrada do teclado
 int vidas; // número de vidas inicial
 
@@ -594,7 +594,7 @@ void load(); // carrega o jogo
 void Delay(long double); // Emula um delay
 void Move(); // Permite a movimentação da cobra
 void Comida(); // Gera aleatóriamente na tela um asterisco que representa a comida
-int Ponti(); // retorna a pontuação do jogador
+int Score(); // retorna a pontuação do jogador
 void gotoxy(int x, int y); // Funções padrões de que permitem inserir algo em qualquer lugar da tela *precisam ser declaradas no Code:blocks*
 void GotoXY(int x,int y); // Funções padrões de que permitem inserir algo em qualquer lugar da tela *precisam ser declaradas no Code:blocks*
 void Bend(); // Permite que a cauda da cobra se dobre
@@ -836,7 +836,7 @@ void GotoXY(int x, int y){
 
 
 void Bend(){
-
+    //https://youtu.be/65iM1djdfQ0?t=243
     int i,j,diff;
     for(i=bend_no; i>=0&&len<length; i--){
         if(bend[i].x==bend[i-1].x){
@@ -935,8 +935,7 @@ void Baixo(){
         cabeca.y++;
 }
 
-void Esq()
-{
+void Esq(){
     int i;
     for(i=0; i<=(bend[bend_no].x-cabeca.x)&&len<length; i++)
     {
