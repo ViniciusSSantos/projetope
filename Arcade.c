@@ -899,20 +899,20 @@ void Borda(){
     system("cls");
     int i;
     GotoXY(comida.x,comida.y);
-    printf("F");
+    printf("X");
     for(i=10; i<71; i++)
     {
         GotoXY(i,10);
-        printf("!");
+        printf("#");
         GotoXY(i,30);
-        printf("!");
+        printf("#");
     }
     for(i=10; i<31; i++)
     {
         GotoXY(10,i);
-        printf("!");
+        printf("#");
         GotoXY(70,i);
-        printf("!");
+        printf("#");
     }
 }
 
