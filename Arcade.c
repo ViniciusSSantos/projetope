@@ -590,13 +590,12 @@ int vidas; // número de vidas inicial
 
 int jogoCobra();//inicia o jogo
 void Print(); //Printa todas informações iniciais
-void load(); // carrega o jogo
 void Delay(long double); // Emula um delay
 void Move(); // Permite a movimentação da cobra
 void Comida(); // Gera aleatóriamente na tela um asterisco que representa a comida
 int Score(); // retorna a pontuação do jogador
-void gotoxy(int x, int y); // Funções padrões de que permitem inserir algo em qualquer lugar da tela *precisam ser declaradas no Code:blocks*
-void GotoXY(int x,int y); // Funções padrões de que permitem inserir algo em qualquer lugar da tela *precisam ser declaradas no Code:blocks*
+void gotoxy(int x, int y); // Funções padrões de que permitem inserir algo em qualquer lugar da tela *precisam ser declaradas*
+void GotoXY(int x,int y); // Funções padrões de que permitem inserir algo em qualquer lugar da tela *precisam ser declaradas*
 void Bend(); // Permite que a cauda da cobra se dobre
 void Borda(); // Gera os limites do jogo
 void Baixo(); // Permite a movimentação para baixo
@@ -620,8 +619,6 @@ int jogoCobra(){
     Print();
 
     system("cls");
-
-    load();
 
     length=5;
 
@@ -654,18 +651,6 @@ void Print(){
         exit(0);
 }
 
-void load(){
-
-    int r,q;
-    gotoxy(36,14);
-    printf("CARREGANDO...");
-    gotoxy(30,15);
-    for(r=1; r<=20; r++){
-        for(q=0; q<=100000000; q++);
-        printf("%c",177);
-    }
-    getch();
-}
 
 void Delay(long double k){
     Score();
