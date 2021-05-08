@@ -6,6 +6,7 @@
 #include <windows.h>
 #include <process.h>
 
+// as bibliotecas  conio.h e windows.h não funcionam em compiladores do linux
 void vinteeum();
 void jogoDaVelha();
 
@@ -1017,9 +1018,6 @@ void Sair(){
 //-----------------------------------------------------------------------------------
 //Parte da Nicoly
 
-void correta();
-void incorreta(int certas);
-void premio_maximo();
 
 void milionario()
 {
