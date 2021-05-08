@@ -1244,7 +1244,7 @@ void milionario()
     if (resposta == 1)
     {
         certas++;
-        premio_maximo();
+        correta();
     }
 
     else
@@ -1319,7 +1319,7 @@ void milionario()
     if (resposta == 3)
     {
         certas++;
-        correta();
+        premio_maximo();
     }
 
     else
