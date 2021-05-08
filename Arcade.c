@@ -1381,7 +1381,8 @@ void premio_maximo()
 }
 
 
-
+//-----------------------------------------------------------------------------------
+//Parte da Leonardo
 void jogoDaVelha( ){
 	int i, j, linha, coluna, cont, contNum;
 	char matriz[3][3];
