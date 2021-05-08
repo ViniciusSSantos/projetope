@@ -28,7 +28,7 @@ void main()
             vinteeum();
             break;
         case 3:
-            jogoCobra();
+            jogoCobra();       
         case 0:
             arcade = 0;
             break;
@@ -821,7 +821,6 @@ void GotoXY(int x, int y){
 
 
 void Bend(){
-    //https://youtu.be/65iM1djdfQ0?t=243
     int i,j,diff;
     for(i=bend_no; i>=0&&len<length; i--){
         if(bend[i].x==bend[i-1].x){
