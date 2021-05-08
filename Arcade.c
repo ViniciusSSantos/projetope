@@ -28,7 +28,9 @@ void main()
             vinteeum();
             break;
         case 3:
-            jogoCobra();       
+            jogoCobra();    
+        case 4:
+            milionario();   
         case 0:
             arcade = 0;
             break;
