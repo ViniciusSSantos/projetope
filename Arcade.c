@@ -1009,3 +1009,367 @@ void Sair(){
         }
     }
 }
+
+//-----------------------------------------------------------------------------------
+//Parte da Nicoly
+
+void correta();
+void incorreta(int certas);
+void premio_maximo();
+
+void milionario()
+{
+    int certas, resposta;
+
+    certas = 0;
+
+    printf("=================== QUEM QUER SER UM MILIONARIO? ===================\n");
+
+    printf("Pegunta 1 - Qual destes astros nao eh um planeta? \n1: Urano \n2: Jupiter \n3: Lua \n4: Marte\n");
+
+    scanf("%i", &resposta);
+
+    if (resposta == 3)
+    {
+        certas++;
+        correta();
+    }
+
+    else
+    {
+        incorreta(certas);
+    }
+
+    printf("Pergunta 2 - Complete o ditado popular: Pior cego eh aquele que nao quer... \n1: Ver \n2: Crer \n3: Saber \n4: Ter\n");
+
+    scanf("%i", &resposta);
+
+    if (resposta == 1)
+    {
+        certas++;
+        correta();
+    }
+
+    else
+    {
+        incorreta(certas);
+    }
+
+    printf("Pergunta 3 - Que atriz interpretou a personagem principal no filme 'Dormindo com o Inimigo'? \n1: Cameron Diaz \n2: Julia Roberts \n3: Debra Winger \n4: Jennifer Lopez\n");
+
+    scanf("%i", &resposta);
+
+    if (resposta == 2)
+    {
+        certas++;
+        correta();
+    }
+
+    else
+    {
+        incorreta(certas);
+    }
+
+    printf("Pergunta 4 - Qual a capital de Pernambuco? \n1: Olinda \n2: Recife \n3: Salvador \n4: Maceio\n");
+
+    scanf("%i", &resposta);
+
+    if (resposta == 2)
+    {
+        certas++;
+        correta();
+    }
+
+    else
+    {
+        incorreta(certas);
+    }
+
+    printf("Pergunta 5 - Que outro nome se pode dar ao sentido do gosto? \n1: Tato \n2: Paladar \n3: Visao\n4: Olfato\n");
+
+    scanf("%i", &resposta);
+
+    if (resposta == 2)
+    {
+        certas++;
+        correta();
+    }
+
+    else
+    {
+        incorreta(certas);
+    }
+
+    printf("Pergunta 6 - O atentado de 11 de Setembro aconteceu em que ano? \n1: 1999 \n2: 2000 \n3: 2001 \n4: 2002 \n");
+
+    scanf("%i", &resposta);
+
+    if (resposta == 3)
+    {
+        certas++;
+        correta();
+    }
+
+    else
+    {
+        incorreta(certas);
+    }
+
+    printf("Pergunta 7 - Qual eh o idioma oficial de Cabo Verde? \n1: Portugues \n2: Frances \n3: Ingles\n4: Zulu\n");
+
+    scanf("%i", &resposta);
+
+    if (resposta == 1)
+    {
+        certas++;
+        correta();
+    }
+
+    else
+    {
+        incorreta(certas);
+    }
+
+    printf("Pergunta 8 - Segundo Alfred Wegener, qual o nome do supercontinente que existiu ha aproximadamente 200 milhoes de anos? \n1: Panthalassa \n2: Mioceno \n3: Pangeia \n4: Tethys\n");
+
+    scanf("%i", &resposta);
+
+    if (resposta == 3)
+    {
+        certas++;
+        correta();
+    }
+
+    else
+    {
+        incorreta(certas);
+    }
+
+    printf("Pergunta 9 - O que signfica as siglas da marca BMW? \n1: Bavarian Motor Works \n2: Bad Motor Work \n3: Bargain Machines Works \n4: Build Munique Wall \n");
+
+    scanf("%i", &resposta);
+
+    if (resposta == 1)
+    {
+        certas++;
+        correta();
+    }
+
+    else
+    {
+        incorreta(certas);
+    }
+
+    printf("Pergunta 10 - Qual o nome da mulher simbolo da luta contra a violencia domestica no Brasil? \n1: Nise da Silveira \n2: Zuzu Angel \n3: Maria Quiteria de Jesus \n4: Maria da Penha\n");
+
+    scanf("%i", &resposta);
+
+    if (resposta == 4)
+    {
+        certas++;
+        correta();
+    }
+
+    else
+    {
+        incorreta(certas);
+    }
+
+    printf("Pergunta 11 - O documentario 'Lixo Extraordinario' retrata um trabalho de qual artista plastico? \n1: Tomie Ohtake \n2: Romero Britto \n3: Vik Muniz \n4: Lygia Clark \n");
+
+    scanf("%i", &resposta);
+
+    if (resposta == 3)
+    {
+        certas++;
+        correta();
+    }
+
+    else
+    {
+        incorreta(certas);
+    }
+
+    printf("Pergunta 12 - Joaquim Manuel de Macedo, autor de 'A Moreninha', faz parte de qual movimento literario? \n1: Romantismo \n2: Modernismo \n3: Realismo \n4: Parnasianismo \n");
+
+    scanf("%i", &resposta);
+
+    if (resposta == 1)
+    {
+        certas++;
+        correta();
+    }
+
+    else
+    {
+        incorreta(certas);
+    }
+
+    printf("Pergunta 13 - Qual artista brasileiro pintou o painel duplo 'Guerra e Paz', em exibicao na sede da ONU em Nova Iorque? \n1: Anita Malfatti \n2: Candido Portinari \n3: Tarsila do Amaral \n4: Emiliano Di Cavalcanti \n");
+
+    scanf("%i", &resposta);
+
+    if (resposta == 2)
+    {
+        certas++;
+        correta();
+    }
+
+    else
+    {
+        incorreta(certas);
+    }
+
+    printf("Pergunta 14 - Qual destes alimentos era considerado sagrado pelos incas? \n1: Arroz \n2: Painco \n3: Quinoa \n4: Sagu \n");
+
+    scanf("%i", &resposta);
+
+    if (resposta == 3)
+    {
+        certas++;
+        correta();
+    }
+
+    else
+    {
+        incorreta(certas);
+    }
+
+    printf("Pergunta 15 - Em que continente se situam as Ilha Malvinas? \n1: America do Sul \n2: Africa \n3: Asia \n4: Europa \n");
+
+    scanf("%i", &resposta);
+
+    if (resposta == 1)
+    {
+        certas++;
+        premio_maximo();
+    }
+
+    else
+    {
+        incorreta(certas);
+    }
+
+    printf("Pergunta 16 - Qual destes paises fica na Oceania? \n1: Australia \n2: Libano \n3: Nigeria \n4: Russia \n");
+
+    scanf("%i", &resposta);
+
+    if (resposta == 1)
+    {
+        certas++;
+        correta();
+    }
+
+    else
+    {
+        incorreta(certas);
+    }
+
+    printf("Pergunta 17 - Qual o planeta mais quente do sistema solar? \n1: Venus \n2: Mercurio \n3: Terra \n4: Netuno\n");
+
+    scanf("%i", &resposta);
+
+    if (resposta == 1)
+    {
+        certas++;
+        correta();
+    }
+
+    else
+    {
+        incorreta(certas);
+    }
+
+    printf("Pergunta 18 - Em que ano naufragou o Titanic? \n1: 1918 \n2: 1924 \n3: 1906 \n4: 1912 \n");
+
+    scanf("%i", &resposta);
+
+    if (resposta == 4)
+    {
+        certas++;
+        correta();
+    }
+
+    else
+    {
+        incorreta(certas);
+    }
+
+    printf("Pergunta 19 - Quem canta a musica 'We Found Love'? \n1: Katy Perry \n2: Rihanna \n3: Lady Gaga \n4: Jessie J \n");
+
+    scanf("%i", &resposta);
+
+    if (resposta == 2)
+    {
+        certas++;
+        correta();
+    }
+
+    else
+    {
+        incorreta(certas);
+    }
+
+    printf("Pergunta 20 - Qual dos seguintes nao eh um aminoacido? \n1: Arginina \n2: Triptofano \n3: Carboxila \n4: Aspartato\n");
+
+    scanf("%i", &resposta);
+
+    if (resposta == 3)
+    {
+        certas++;
+        correta();
+    }
+
+    else
+    {
+        incorreta(certas);
+    }
+    
+}
+
+void correta()
+{
+    printf("Sua resposta esta... \n");
+
+    sleep(3);
+
+    printf("CORRETA!!! \nProxima pergunta...\n");
+
+    sleep(2);
+}
+
+void incorreta(int certas)
+{
+    int continuar, premio;
+
+    premio = certas * 50000;
+
+    printf("Sua resposta esta...\n");
+
+    sleep(3);
+
+    printf("INCORRETA!!! \nVoce ganhou R$%i\n", premio);
+
+    sleep(2);
+
+    printf("1 - Tentar novamente \n2 - Sair do jogo\n");
+
+    scanf("%i", &continuar);
+
+    if (continuar == 1)
+    {
+        milionario();
+    }
+
+    else if (continuar == 2)
+    {
+        exit(0);
+    }
+}
+
+void premio_maximo()
+{
+    printf("Parabens, voce ganhou o premio maximo de R$1.000.000!!!");
+    
+    exit(0);
+}
