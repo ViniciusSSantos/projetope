@@ -7,7 +7,7 @@
 #include <process.h>
 
 void vinteeum();
-
+void jogoDaVelha();
 
 void main()
 {
@@ -17,7 +17,7 @@ void main()
     {
         int id;
         printf("\n==========          Menu inicial          ==========");
-        printf("\n1 - Space Wars\n2 - 21\n3 - Jogo da Cobrinha\n0 - Sair do programa\n");
+        printf("\n1 - Space Wars\n2 - 21\n3 - Jogo da Cobrinha\n4-Milionario\n5-Jogo da Velha\n0 - Sair do programa\n");
         scanf("%d", &id);
         switch (id)
         {
@@ -31,6 +31,8 @@ void main()
             jogoCobra();    
         case 4:
             milionario();   
+        case 5:
+            jogoDaVelha();
         case 0:
             arcade = 0;
             break;
@@ -1375,3 +1377,84 @@ void premio_maximo()
     
     exit(0);
 }
+
+
+
+void jogoDaVelha( ){
+	int i, j, linha, coluna, cont, contNum;
+	char matriz[3][3];
+	
+  printf("        1   2   3\n");
+
+	for(i = 0; i < 3; i++){
+		printf("\n");
+		for(j = 0; j < 3; j++){
+			printf("\t");
+      if(i == contNum && j == 0){
+        printf("%d   ", i+1);
+      }
+			matriz[i][j] = '*';
+			printf("%c", matriz[i][j]);
+		}
+      contNum++;
+      printf("\n");
+      printf("\n");
+	}
+
+
+	for (cont = 0; cont < 9; cont++){
+		contNum = 0;
+		printf("\n Insira as coordenadas para marcar a forma (L/C):\n");
+		scanf("%d%d", &linha, &coluna);
+		fflush(stdout);
+    coluna--;
+		linha--;
+		
+		printf("\n");
+    printf("        1   2   3\n");
+		if(matriz[linha][coluna] == '*'){
+		
+			if(cont%2){
+				matriz[linha][coluna] = 'O';
+			} 
+			else{
+				matriz[linha][coluna] = 'X';
+			}
+			for(i = 0; i < 3; i++){
+				printf("\n");
+				for(j = 0; j < 3; j++){
+					printf("\t");
+          if(i == contNum && j == 0){
+            printf("%d   ", i+1);
+           }
+					printf("%c", matriz[i][j]);
+				}
+        contNum++;
+				printf("\n");
+        printf("\n");
+			}
+			if((matriz[0][0] == matriz[0][1] && matriz[0][0] == matriz[0][2] && matriz[0][0] != '*')||
+			   (matriz[0][0] == matriz[1][1] && matriz[0][0] == matriz[2][2] && matriz[0][0] != '*')||
+			   (matriz[0][0] == matriz[1][0] && matriz[0][0] == matriz[2][0] && matriz[0][0] != '*')||
+			   (matriz[0][1] == matriz[1][1] && matriz[0][1] == matriz[2][1] && matriz[0][1] != '*')||
+			   (matriz[0][2] == matriz[1][2] && matriz[0][2] == matriz[2][2] && matriz[0][2] != '*')||
+			   (matriz[1][0] == matriz[1][1] && matriz[1][0] == matriz[1][2] && matriz[1][0] != '*')||
+			   (matriz[2][0] == matriz[2][1] && matriz[2][0] == matriz[2][2] && matriz[2][0] != '*')||
+			   (matriz[2][0] == matriz[1][1] && matriz[2][0] == matriz[0][2] && matriz[2][0] != '*')){
+					
+				printf("\nJogador %d WIN!", (cont%2) + 1);	
+				exit(0);				
+			}
+		}
+		else{
+			printf("\n O espaço já esta ocupado\n");
+			cont--;
+		}
+	}
+	
+	printf("\nEmpate");
+	exit(0);
+}
+
+
+
